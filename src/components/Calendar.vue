@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, computed } from 'vue';
+import { defineProps, ref, computed, onMounted } from 'vue';
 
 const locales = {
   ru: {
@@ -132,13 +132,77 @@ const calendarDays = computed(() => {
   return days;
 });
 
+function initCalendar() {
+  if (props.initialDate) {
+    const [year, month, day] = props.initialDate.split('-').map(Number)
+    currentDate.value = new Date(year, month - 1, day)
+    selectedDate.value = new Date(year, month - 1, day)
+  } else {
+    const today = new Date()
+    currentDate.value = new Date(today.getFullYear(), today.getMonth(), 1)
+    selectedDate.value = today
+  }
+}
+
+onMounted(() => {
+  initCalendar();
+});
+
+function changeToPreviousMonth() {
+  currentDate.value = new Date(currentYear.value, currentMonth.value - 1, 1)
+}
+
+function changeToNextMonth() {
+  currentDate.value = new Date(currentYear.value, currentMonth.value + 1, 1)
+}
+
 </script>
 <template>
-  компонент календаря - {{ currentDate }}</br>
+  <!-- компонент календаря - {{ currentDate }}</br>
   язык - {{ currentLanguage }}</br>
   currentYear - {{ currentYear }}</br>
   currentMonth - {{ currentMonth }}</br>
   currentMonthName - {{ currentMonthName }}</br>
   weekDays - {{ weekDays }}</br>
-  calendarDays - {{ calendarDays }}</br>
+  calendarDays - {{ calendarDays }}</br> -->
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button @click="changeToPreviousMonth" class="nav-btn">
+        &#9668;
+      </button>
+      <p class="month-year">
+        {{ currentMonthName }} {{ currentYear }}
+      </p>
+      <button @click="changeToNextMonth" class="nav-btn">
+        &#9658;
+      </button>
+    </div>
+  </div>
+  
 </template>
+
+<style scoped>
+.calendar-container {
+  width: 320px;
+  box-sizing: border-box;
+  border: 1px solid #808080;
+  border-radius: 12px;
+}
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+}
+.month-year {
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
+}
+.nav-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+</style>
