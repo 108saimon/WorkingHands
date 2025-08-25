@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const locales = {
   ru: {
@@ -48,6 +48,8 @@ const props = defineProps({
     default: 'ru'
   }
 });
+
+const emit = defineEmits(['language-changed', 'date-selected'])
 
 const currentDate = ref(new Date());
 const selectedDate = ref(null);
@@ -157,13 +159,13 @@ function changeToNextMonth() {
 }
 
 function changeLanguage() {
-  this.$emit('language-changed', currentLanguage.value)
+  emit('language-changed', currentLanguage.value)
 }
 
 function selectDate(day) {
   if (day.isCurrentMonth) {
     selectedDate.value = day.date
-    this.$emit('date-selected', {
+    emit('date-selected', {
       date: day.date,
       formattedDate: formatDate(day.date)
     })
@@ -191,6 +193,46 @@ function formatDate(date) {
         &#9658;
       </button>
     </div>
+    <div class="weekdays">
+      <div
+        v-for="day in weekDays"
+        :key="day"
+        class="weekday"
+      >
+        {{ day }}
+      </div>
+    </div>
+    <div class="days">
+      <div
+        v-for="day in calendarDays"
+        :key="day.key"
+        :class="[
+          'day',
+          {
+            'other-month': !day.isCurrentMonth,
+            'today': day.isToday,
+            'selected': day.isSelected,
+            'clickable': day.isCurrentMonth
+          }
+        ]"
+        @click="selectDate(day)"
+      >
+        {{ day.dayNumber }}
+      </div>
+    </div>
+    <div class="language-selector">
+      <label for="language">
+        {{ currentLanguage === 'ru' ? 'Язык:' : 'Language' }}
+      </label>
+      <select id="language" v-model="currentLanguage" @change="changeLanguage">
+        <option value="ru">
+          Русский
+        </option>
+        <option value="en">
+          English
+        </option>
+      </select>
+    </div>
   </div>
   
 </template>
@@ -201,11 +243,14 @@ function formatDate(date) {
   box-sizing: border-box;
   border: 1px solid #808080;
   border-radius: 12px;
+  overflow: hidden;
 }
+
 .calendar-header {
   display: flex;
   justify-content: space-between;
   padding: 8px;
+  border-bottom: 1px solid #808080;
 }
 .month-year {
   font-size: 18px;
@@ -218,5 +263,67 @@ function formatDate(date) {
   border: none;
   background: none;
   cursor: pointer;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid #808080;
+}
+.weekday {
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid #808080;
+}
+
+.day {
+  padding: 12px 8px;
+  text-align: center;
+  cursor: default;
+  position: relative;
+}
+
+.day.other-month {
+  color: #ccc;
+  background-color: #fff;
+}
+.day.clickable {
+  cursor: pointer;
+}
+.day.clickable:hover {
+  background-color: #808080;
+}
+.day.today {
+  background-color: #808080;
+  color: white;
+}
+.day.selected {
+  background-color: #000;
+  color: white;
+}
+
+.language-selector {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.language-selector select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+.language-selector select:focus {
+  outline: none;
+  border-color: #808080;
 }
 </style>
