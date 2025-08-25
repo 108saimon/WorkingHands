@@ -1,5 +1,9 @@
 <script setup>
 import Calendar from './components/Calendar.vue';
+
+function alertDate(payload) {
+  alert(`Дата: ${payload.date}; Отформатированная дата: ${payload.formattedDate}; `)
+}
 </script>
 
 <template>
@@ -7,7 +11,17 @@ import Calendar from './components/Calendar.vue';
     <div class="container">
       <h1>Пример использования:</h1>
       <div>
-        <Calendar />
+        <p>Календарь с дефолтными настройками</p>
+        <Calendar @date-selected="alertDate" />
+      </div>
+      <!-- <br> -->
+      <div>
+        <p>Календарь с предустановленными настройками(дата: 13 мая 2007; язык - английский)</p>
+        <Calendar
+          :initial-date="'2007-5-13'"
+          :language="'en'"
+          @date-selected="alertDate"
+        />
       </div>
     </div>
   </div>
