@@ -1,9 +1,5 @@
 <script setup>
-import { defineOptions, defineProps } from 'vue';
-
-defineOptions({
-  name: 'Calendar'
-});
+import { defineProps } from 'vue';
 
 defineProps({
   initialDate: {
@@ -18,3 +14,6 @@ defineProps({
 
 
 </script>
+<template>
+  компонент календаря
+</template>
