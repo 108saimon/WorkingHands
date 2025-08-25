@@ -3,10 +3,30 @@ import Calendar from './components/Calendar.vue';
 </script>
 
 <template>
-  <h1>Календарь</h1>
-  <div>
-    <Calendar />
+  <div class="wrapper">
+    <div class="container">
+      <h1>Календарь</h1>
+      <div>
+        <Calendar />
+      </div>
+    </div>
   </div>
 </template>
 
-<style scoped></style>
+<style>
+body, html {
+  min-height: 100vh;
+}
+div {
+  box-sizing: border-box;
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  width: 960px;
+  padding: 20px;
+}
+</style>
